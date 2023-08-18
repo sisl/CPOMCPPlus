@@ -1,4 +1,4 @@
-This branch is for running LightDark and Spillpoint experiments
+This branch is for running LightDark and Spillpoint experiments.
 Please switch to the branch for the experiments you wish to run.
 ### Installation Instructions
 
