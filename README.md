@@ -1,4 +1,4 @@
-This branch is for running Rocksample experiments
+This branch is for running LightDark and Spillpoint experiments
 Please switch to the branch for the experiments you wish to run.
 ### Installation Instructions
 
@@ -8,8 +8,6 @@ Please switch to the branch for the experiments you wish to run.
     - CMCTS
     - SpillpointPOMDP
     - CPOMDPs
-
-2. Move Rocksample.jl folder to `.julia/dev`
 
 3. Run `develop.jl` to develop the packages
 

@@ -68,11 +68,9 @@ function run_cpomdp_simulation(cpomdp::CPOMDP, solver::Solver,
     first_vals = NamedTuple[]
 
     actiontoind = Dict()
-    if isa(cpomdp, CLightDarkNew)
-        actions = [-10, -5, -1, 0, 1, 5, 10]
-        for (ind, i) in enumerate(actions)
-            actiontoind[i] = ind
-        end
+    actions = [-10, -5, -1, 0, 1, 5, 10]
+    for (ind, i) in enumerate(actions)
+        actiontoind[i] = ind
     end
     
     for (s, a, o, r, c, sp, b, ai) in stepthrough(cpomdp, planner, bu, "s,a,o,r,c,sp,b,action_info", max_steps=max_steps)
@@ -80,31 +78,44 @@ function run_cpomdp_simulation(cpomdp::CPOMDP, solver::Solver,
         R += r*γ
         C .+= c.*γ
         rc = 0.0
-        
-        if γ == 1 && isa(solver, CPOMCPOWSolver)
-            tree = :tree in keys(ai) ? ai[:tree] : nothing
-            if isa(cpomdp, CLightDarkNew)
+
+        if γ == 1
+
+            if typeof(cpomdp.pomdp) != SpillpointInjectionPOMDP
+                tree = :tree in keys(ai) ? ai[:tree] : nothing
                 a_indx = actiontoind[a]
                 v_taken_first = tree.v[a_indx]
                 cv_taken_first = tree.cv[a_indx]
-            end
-            if solver.plus_flag
-                lambda_first = tree.lambda[1]
+                if solver.plus_flag
+                    lambda_first = tree.lambda[1]
+                else
+                    lambda_first = planner._lambda
+                end
+
+                n = [tree.n[actiontoind[a]] for a in actions]
+                
+                push!(first_vals, (;a_indx, v_taken_first, cv_taken_first, lambda_first, n))
             else
-                lambda_first = planner._lambda
-            end
-            
-            if isa(cpomdp, CLightDarkNew)
-                n = [tree.n[actiontoind[a]] for a in actions] # Also for lightdark only for the time being
+                #@infiltrate
+                tree = :tree in keys(ai) ? ai[:tree] : nothing
+                idx = findall(x -> x == a, tree.a_labels)                
+                v_taken_first = reduce(vcat, tree.v[idx])
+                cv_taken_first = reduce(vcat, tree.cv[idx])
+                if length(v_taken_first) > 1
+                    v_taken_first = reduce(vcat, sum(v_taken_first) / length(v_taken_first)) #mean is redefined
+                    cv_taken_first = reduce(vcat, sum(cv_taken_first) / length(cv_taken_first))
+                end
+                if solver.plus_flag
+                    lambda_first = tree.lambda[1]
+                else
+                    lambda_first = planner._lambda
+                end
+                push!(first_vals, (;a, v_taken_first, cv_taken_first, lambda_first))
             end
 
-            if isa(cpomdp, CLightDarkNew)
-                push!(first_vals, (;a_indx, v_taken_first, cv_taken_first, lambda_first, n)) # This stuff is set up for lightdark, but we don't have actiontoind for rocksample yet
-            else
-                push!(first_vals, (;lambda_first))
-            end
         end
-        
+
+        # @infiltrate
         γ *= discount(cpomdp)
         if track_history
             push!(hist, (;s, a, o, r, c, rc, sp, b, 
