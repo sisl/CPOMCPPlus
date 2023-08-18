@@ -3,9 +3,9 @@ Please switch to the branch for the experiments you wish to run.
 ### Installation Instructions
 
 1. Download the following packages to `.julia/dev` folder:
-    - CPOMCP
-    - CPOMCPOW
-    - CMCTS
+    - CPOMCP (lambda branch)
+    - CPOMCPOW (lambda_prop branch)
+    - CMCTS (lambda_prop branch)
     - SpillpointPOMDP
     - CPOMDPs
 
