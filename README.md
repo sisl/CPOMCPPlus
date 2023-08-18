@@ -1,3 +1,5 @@
+This branch is for running Rocksample experiments
+Please switch to the branch for the experiments you wish to run.
 ### Installation Instructions
 
 1. Download the following packages to `.julia/dev` folder:
