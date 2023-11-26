@@ -1,8 +1,10 @@
+
 using Statistics
 using Infiltrator
 using FileIO
 using Plots
-pgfplotsx()
+#pgfplotsx()
+#pyplot()
 include("plot_ld_stat_combined.jl")
 
 function load_this_data(file_name::String)
@@ -26,7 +28,7 @@ struct SolverTypeRockCombo
 end
 
 nsims = 150 
-tree_queries = [1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000]
+tree_queries = [100.0, 200.0, 300.0, 400.0, 500.0, 600.0, 700.0, 800.0, 900.0, 1000.0] #[1000.0, 2000.0, 3000.0, 4000.0, 5000.0, 6000.0, 7000.0, 8000.0, 9000.0, 10000.0]
 plus_flag = [true, false]
 plotting_for = "CPOMCPOW"
 Plus = SolverTypeRockCombo(true)
@@ -35,7 +37,7 @@ Solvers = [Plus, Minus]
 
 for solver in Solvers
     for tq in tree_queries
-        file_name = "results/rock_cbud2/CPOMCPOWrocksample(7, 8)_plf_$(solver.flag)_$(nsims)_sims_tq$(tq)_additional.jld2"
+        file_name = "results/new_rock/rocksample_plf$(solver.flag)_size(7, 7)_pomcp_$(nsims)sims_tq$(tq).jld2"
         R, C = load_this_data(file_name)
         push!(solver.Rs, R)
         push!(solver.Cs, C)
@@ -44,16 +46,16 @@ end
 
 l_R, l_C = lightDark()
 ###Performance Metrics###
-p_SE = plot(ylabel = "discounted R", xlabel = "simulations")#, xticks=xtick_values) #title = "Average Reward w/ Standard Dev", 
-c_SE = plot(ylabel = "discounted C", xlabel = "simulations", legend=:topright, legend_background_color=:transparent, fg_legend = :transparent, legendfontsize=13)#, title = "Constrained RockSample", titlefontsize = 13) #legend_columns=-1, , xguidefontsize=13, yguidefontsize=13)#, xticks=xtick_values, ) #title = "Average Cost w/ Standard Dev", 
+p_SE = plot(ylabel = "discounted return", xlabel = "simulations")#, xticks=xtick_values) #title = "Average Reward w/ Standard Dev", 
+c_SE = plot(ylabel = "discounted cost", xlabel = "simulations", legend=:topright, legend_background_color=:transparent, fg_legend = :transparent)#, legendfontsize=8)#, title = "Constrained RockSample", titlefontsize = 13) #legend_columns=-1, , xguidefontsize=13, yguidefontsize=13)#, xticks=xtick_values, ) #title = "Average Cost w/ Standard Dev", 
 
 for solver in Solvers
     if solver.flag == true
         color = :blue
-        solver_label = "CPOMCPOW+"
+        solver_label = "CC+" #CPOMCPOW
     else
         color = :red
-        solver_label = "CPOMCPOW"
+        solver_label = "CC"
     end
     #Average Discounted Cumulative Reward vs Iteration
     means = [Statistics.mean(iters) for iters in solver.Rs]
@@ -71,8 +73,8 @@ for solver in Solvers
     plot!(c_SE, tree_queries, meansC-SEsC, fillrange=meansC+SEsC, fillalpha=0.3, label="", linecolor=nothing, fillcolor=color)
 end
 hline!(c_SE, [2.0], line=:dash, label="constraint budget", linecolor=:green)
-rock = plot(c_SE, p_SE, layout=grid(1,2))
-ld = plot(l_C, l_R , layout=grid(1,2))
+rock = plot(c_SE, p_SE, layout=grid(1,2))#, bottom_margin = Plots.mm)
+ld = plot(l_C, l_R , layout=grid(1,2))#, top_margin = Plots.mm)
 sqr = plot(rock, ld, layout=grid(2,1), size=(700,500))
 
 @infiltrate

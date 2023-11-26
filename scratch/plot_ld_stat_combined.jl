@@ -2,7 +2,9 @@ using Statistics
 using Infiltrator
 using FileIO
 using Plots
-pgfplotsx()
+#using LaTeXStrings
+#pyplot()
+#gr()
 
 function load_that_data(file_name::String)
     load_data = load(file_name)
@@ -28,7 +30,7 @@ end
 
 function lightDark()
     nsims = 100
-    tree_queries = [10, 100000.0, 150000.0, 200000.0, 250000.0, 300000.0, 350000.0, 400000.0, 450000.0, 550000.0, 600000.0] 
+    tree_queries = [100.0, 100000.0, 150000.0, 200000.0, 250000.0, 300000.0, 350000.0, 400000.0, 450000.0, 550000.0, 600000.0] 
     plus_flag = [true, false]
 
     Plus = SolverTypeCombo(true)
@@ -49,12 +51,13 @@ function lightDark()
         end
     end
 
-    α = 1.4
-    Plots.scalefontsizes(α)
+    # α = 0.9
+    # Plots.scalefontsizes(α)
+    #default(fontfamily = "Times New Roman")
     ###Performance Metrics###
     xtick_values = [3e5, 6e5]
-    p_SE = plot(ylabel = "discounted R", xlabel = "simulations", xticks=xtick_values)
-    c_SE = plot(ylabel = "discounted C", xlabel = "simulations", legend=:outertop, legend_columns=-1, xticks=xtick_values)
+    p_SE = plot(ylabel = "discounted return", xlabel = "simulations", xticks=xtick_values, right_margin=5*Plots.mm)
+    c_SE = plot(ylabel = "discounted cost", xlabel = "simulations", legend=:outertop, legend_columns=-1, xticks=xtick_values)
     for solver in Solvers
         #Average Discounted Cumulative Reward vs Iteration
         means = [Statistics.mean(iters) for iters in solver.Rs]
@@ -80,7 +83,6 @@ function lightDark()
     end
 
     hline!(c_SE, [0.1], line=:dash, label="", linecolor=:green)
-    infiltrate
     x = plot(c_SE, p_SE,  layout=grid(2, 1), size=(500,500))
     return p_SE,c_SE
 end
