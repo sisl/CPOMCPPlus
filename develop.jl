@@ -1,14 +1,16 @@
 using Pkg
 Pkg.activate(".")
-root = "/"
+
+root = dirname(@__FILE__)
+#root = "C:/Users/stocc"
 
 dev_packages = [
-    PackageSpec(url="$root/.julia/dev/CPOMCP/"),
-    PackageSpec(url="$root/.julia/dev/CPOMCPOW/"),
-    PackageSpec(url="$root/.julia/dev/CMCTS/"),
-    PackageSpec(url="$root/.julia/dev/SpillpointPOMDP/"),
-    PackageSpec(url="$root/.julia/dev/CPOMDPs/"),
-    PackageSpec(url="$root/.julia/dev/RockSample.jl/"),
+    PackageSpec(url= joinpath(root, "CPOMCP.jl")),
+    PackageSpec(url= joinpath(root, "CMCTS.jl")),
+    PackageSpec(url= joinpath(root, "SpillpointPOMDP.jl")),
+    PackageSpec(url= joinpath(root, "CPOMDPs.jl")),
+    PackageSpec(url= joinpath(root, "RockSample.jl")),
+    PackageSpec(url= joinpath(root, "CPOMCPOW.jl")),
 ]
 ci = haskey(ENV, "CI") && ENV["CI"] == "true"
 
