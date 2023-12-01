@@ -28,7 +28,7 @@ struct SolverTypeRockCombo
 end
 
 nsims = 150 
-tree_queries = [100.0, 200.0, 300.0, 400.0, 500.0, 600.0, 700.0, 800.0, 900.0, 1000.0] #[1000.0, 2000.0, 3000.0, 4000.0, 5000.0, 6000.0, 7000.0, 8000.0, 9000.0, 10000.0]
+tree_queries = [1000.0, 2000.0, 3000.0, 4000.0, 5000.0, 6000.0, 7000.0, 8000.0, 9000.0, 10000.0] #[100.0, 200.0, 300.0, 400.0, 500.0, 600.0, 700.0, 800.0, 900.0, 1000.0] #
 plus_flag = [true, false]
 plotting_for = "CPOMCPOW"
 Plus = SolverTypeRockCombo(true)
@@ -37,7 +37,7 @@ Solvers = [Plus, Minus]
 
 for solver in Solvers
     for tq in tree_queries
-        file_name = "results/new_rock/rocksample_plf$(solver.flag)_size(7, 7)_pomcp_$(nsims)sims_tq$(tq).jld2"
+        file_name = "results/new_rock/rock_1/rocksample_plf$(solver.flag)_size(7, 7)_pomcpow_$(nsims)sims_tq$(tq)_c30.0_initlam[0.0]used_asched4.0.jld2"
         R, C = load_this_data(file_name)
         push!(solver.Rs, R)
         push!(solver.Cs, C)
@@ -52,10 +52,10 @@ c_SE = plot(ylabel = "discounted cost", xlabel = "simulations", legend=:topright
 for solver in Solvers
     if solver.flag == true
         color = :blue
-        solver_label = "CC+" #CPOMCPOW
+        solver_label = "CPOMCPOW+" #CPOMCPOW
     else
         color = :red
-        solver_label = "CC"
+        solver_label = "CPOMCPOW"
     end
     #Average Discounted Cumulative Reward vs Iteration
     means = [Statistics.mean(iters) for iters in solver.Rs]
