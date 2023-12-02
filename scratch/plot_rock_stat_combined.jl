@@ -37,7 +37,10 @@ Solvers = [Plus, Minus]
 
 for solver in Solvers
     for tq in tree_queries
-        file_name = "results/new_rock/rock_1/rocksample_plf$(solver.flag)_size(7, 7)_pomcpow_$(nsims)sims_tq$(tq)_c30.0_initlam[0.0]used_asched4.0.jld2"
+        #rocksample_plftrue_size(7, 7)_pomcpow_150sims_tq1000.0_c30.0_initlam[0.0]used_asched0.1_maxdep10
+        #file_name = "results/new_rock/rock_1/rocksample_plf$(solver.flag)_size(7, 7)_pomcpow_$(nsims)sims_tq$(tq)_c30.0_initlam[0.0]used_asched4.0.jld2"
+        file_name = "results/new_rock/rocksample_plf$(solver.flag)_size(7, 7)_pomcpow_$(nsims)sims_tq$(tq)_c30.0_initlam[0.0]used_asched0.1_maxdep10.jld2"
+        
         R, C = load_this_data(file_name)
         push!(solver.Rs, R)
         push!(solver.Cs, C)
