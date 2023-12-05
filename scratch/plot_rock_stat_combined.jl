@@ -28,7 +28,7 @@ struct SolverTypeRockCombo
 end
 
 nsims = 150 
-tree_queries = [1000.0, 2000.0, 3000.0, 4000.0, 5000.0, 6000.0, 7000.0, 8000.0, 9000.0, 10000.0] #[100.0, 200.0, 300.0, 400.0, 500.0, 600.0, 700.0, 800.0, 900.0, 1000.0] #
+tree_queries = [1e3, 2e3, 4e3, 6e3, 8e3, 9e3, 1e4] #[1000.0, 2000.0, 3000.0, 4000.0, 5000.0, 6000.0, 7000.0, 8000.0, 9000.0, 10000.0] #[100.0, 200.0, 300.0, 400.0, 500.0, 600.0, 700.0, 800.0, 900.0, 1000.0] #
 plus_flag = [true, false]
 plotting_for = "CPOMCPOW"
 Plus = SolverTypeRockCombo(true)
@@ -39,8 +39,8 @@ for solver in Solvers
     for tq in tree_queries
         #rocksample_plftrue_size(7, 7)_pomcpow_150sims_tq1000.0_c30.0_initlam[0.0]used_asched0.1_maxdep10
         #file_name = "results/new_rock/rock_1/rocksample_plf$(solver.flag)_size(7, 7)_pomcpow_$(nsims)sims_tq$(tq)_c30.0_initlam[0.0]used_asched4.0.jld2"
-        file_name = "results/new_rock/rocksample_plf$(solver.flag)_size(7, 7)_pomcpow_$(nsims)sims_tq$(tq)_c30.0_initlam[0.0]used_asched0.1_maxdep10.jld2"
-        
+        #file_name = "results/new_rock/rocksample_plf$(solver.flag)_size(7, 7)_pomcpow_$(nsims)sims_tq$(tq)_c30.0_initlam[0.0]used_asched0.1_maxdep10.jld2"
+        file_name = "results/rock_sub_OG/rocksample_plf$(solver.flag)_size(7, 7)_pomcpow_sims150_tq$(tq).jld2"
         R, C = load_this_data(file_name)
         push!(solver.Rs, R)
         push!(solver.Cs, C)
