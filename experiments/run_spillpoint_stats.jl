@@ -45,9 +45,11 @@ if run[1] # POMCPOW
             max_cpu_time=20 #60 FIXME 
         )
 
-        for tree_queries in [1e2, 3e2, 5e3, 7e2, 9e2, 11e2]
+        for tree_queries in [1e2, 3e2, 5e2, 1e3]
             for plf in [true, false]
 
+                println("tq: ", tree_queries)
+                println("plf: ", plf)
                 kwargs = Dict(
                     :tree_queries=>tree_queries, 
                     :k_observation => k_observation, 

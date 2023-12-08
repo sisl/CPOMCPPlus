@@ -31,10 +31,12 @@ using CPOMCPOW
 
 # models 
 using POMDPModels
-export CLightDark1D
-include("cpomdps/clightdark.jl")
+# export CLightDark1D
+# include("cpomdps/clightdark.jl")
 export LightDarkNew, CLightDarkNew, zeroV_trueC
 include("cpomdps/clightdarknew.jl")
+export CTigerExtended
+include("cpomdps/tigerTerminal.jl")
 
 # using RockSample
 # export RockSampleCPOMDP
@@ -70,7 +72,5 @@ export
     run_cpomdp_simulation,
     run_lambda_experiments
 include("experiments.jl")
-
-
 
 end # module
