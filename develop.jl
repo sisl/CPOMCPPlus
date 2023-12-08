@@ -2,14 +2,12 @@ using Pkg
 Pkg.activate(".")
 
 root = dirname(@__FILE__)
-#root = "C:/Users/stocc"
 
 dev_packages = [
     PackageSpec(url= joinpath(root, "CPOMCP.jl")),
     PackageSpec(url= joinpath(root, "CMCTS.jl")),
     PackageSpec(url= joinpath(root, "SpillpointPOMDP.jl")),
     PackageSpec(url= joinpath(root, "CPOMDPs.jl")),
-    PackageSpec(url= joinpath(root, "RockSample.jl")),
     PackageSpec(url= joinpath(root, "CPOMCPOW.jl")),
 ]
 ci = haskey(ENV, "CI") && ENV["CI"] == "true"

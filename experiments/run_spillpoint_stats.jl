@@ -27,7 +27,7 @@ search_progress_info = true
 
 if run[1] # POMCPOW
 
-    for constraint_budget in [0.0, 0.1, 0.2, 0.3, 0.4]
+    for constraint_budget in [0.0]
         cpomdp = SpillpointInjectionCPOMDP(constraint_budget=constraint_budget)
         mc = max_clip(cpomdp)
         default_updater = CPOMCPPlusExperiments.SpillpointPOMDP.SIRParticleFilter(

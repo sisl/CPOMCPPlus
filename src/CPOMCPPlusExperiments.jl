@@ -36,9 +36,9 @@ include("cpomdps/clightdark.jl")
 export LightDarkNew, CLightDarkNew, zeroV_trueC
 include("cpomdps/clightdarknew.jl")
 
-using RockSample
-export RockSampleCPOMDP
-include("cpomdps/crocksample.jl")
+# using RockSample
+# export RockSampleCPOMDP
+# include("cpomdps/crocksample.jl")
 
 using SpillpointPOMDP
 export SpillpointInjectionCPOMDP

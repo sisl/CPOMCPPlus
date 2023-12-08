@@ -78,7 +78,7 @@ for plus_flag in [true, false]
 
             ns =  [[run[1].n] for run in first_vals]
 
-            file_name = "results/additional_data/ldnew_plf$(plus_flag)_$(nsims)_sims_tq$(tree_queries)_additional.jld2"
+            file_name = "results/light_dark/ldnew_plf$(plus_flag)_$(nsims)_sims_tq$(tree_queries)_additional.jld2"
             save_data = Dict(
                 "R"=>Vr, "C"=> Vc, "a_indx"=>first_actions, "expR"=>guessedR,
                 "expC"=>guessedC, "lambda"=>lambdas, "n"=>ns
