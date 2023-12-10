@@ -2,9 +2,10 @@ using Statistics
 using Infiltrator
 using FileIO
 using Plots
-#using LaTeXStrings
-#pyplot()
-#gr()
+#Plots.reset!()
+pgfplotsx()
+#plot(backend=:pgfplotsx)
+
 
 function load_that_data(file_name::String)
     load_data = load(file_name)
@@ -28,61 +29,64 @@ struct SolverTypeCombo
     end
 end
 
-function lightDark()
-    nsims = 100
-    tree_queries = [100.0, 100000.0, 150000.0, 200000.0, 250000.0, 300000.0, 350000.0, 400000.0, 450000.0, 550000.0, 600000.0] 
-    plus_flag = [true, false]
+#function lightDark()
+nsims = 100
+tree_queries = [10.0, 100000.0, 150000.0, 200000.0, 250000.0, 300000.0, 350000.0, 400000.0, 450000.0, 550000.0, 600000.0] 
+plus_flag = [true, false]
 
-    Plus = SolverTypeCombo(true)
-    Minus = SolverTypeCombo(false)
-    Solvers = [Plus, Minus]
+Plus = SolverTypeCombo(true)
+Minus = SolverTypeCombo(false)
+Solvers = [Plus, Minus]
 
-    for solver in Solvers
-        for tq in tree_queries
-            file_name = "results/additional_data/LightDark/ldnew_plf$(solver.flag)_$(nsims)_sims_tq$(tq)_additional.jld2"
-            R, C, a, expR, expC, lambda, n = load_that_data(file_name)
-            push!(solver.Rs, R)
-            push!(solver.Cs, C)
-            push!(solver.as, a)
-            push!(solver.expRs, expR)
-            push!(solver.expCs, expC)
-            push!(solver.lambdas, lambda)
-            push!(solver.ns, n)
-        end
+for solver in Solvers
+    for tq in tree_queries
+        file_name = "results/light_dark/ldnew_plf$(solver.flag)_$(nsims)_sims_tq$(tq)_additional.jld2"
+#        file_name = "results/additional_data/LightDark/ldnew_plf$(solver.flag)_$(nsims)_sims_tq$(tq)_additional.jld2"
+        R, C, a, expR, expC, lambda, n = load_that_data(file_name)
+        push!(solver.Rs, R)
+        push!(solver.Cs, C)
+        push!(solver.as, a)
+        push!(solver.expRs, expR)
+        push!(solver.expCs, expC)
+        push!(solver.lambdas, lambda)
+        push!(solver.ns, n)
     end
-
-    # α = 0.9
-    # Plots.scalefontsizes(α)
-    #default(fontfamily = "Times New Roman")
-    ###Performance Metrics###
-    xtick_values = [3e5, 6e5]
-    p_SE = plot(ylabel = "discounted return", xlabel = "simulations", xticks=xtick_values, right_margin=5*Plots.mm)
-    c_SE = plot(ylabel = "discounted cost", xlabel = "simulations", legend=:outertop, legend_columns=-1, xticks=xtick_values)
-    for solver in Solvers
-        #Average Discounted Cumulative Reward vs Iteration
-        means = [Statistics.mean(iters) for iters in solver.Rs]
-        stds = [Statistics.std(iters) for iters in solver.Rs]
-        SEs = stds / sqrt(nsims)
-        if solver.flag == true
-            color = :blue
-            solver_label = ""
-        else
-            color = :red
-            solver_label = ""
-        end
-        plot!(p_SE, tree_queries, means, linecolor=color, label="")
-        plot!(p_SE, tree_queries, means-SEs, fillrange=means+SEs, fillalpha=0.3, label="", linecolor=nothing, fillcolor=color)
-        #Average Discounted Cumulative Cost vs Iteration
-        meansC = [Statistics.mean(iters) for iters in solver.Cs]
-        meansC = reduce(vcat, meansC)
-        stdsC = [Statistics.std(iters) for iters in solver.Cs]
-        stdsC = reduce(vcat, stdsC)
-        SEsC = stdsC / sqrt(nsims)
-        plot!(c_SE, tree_queries, meansC, linecolor=color, label = solver_label)
-        plot!(c_SE, tree_queries, meansC-SEsC, fillrange=meansC+SEsC, fillalpha=0.3, label="", linecolor=nothing, fillcolor=color)
-    end
-
-    hline!(c_SE, [0.1], line=:dash, label="", linecolor=:green)
-    x = plot(c_SE, p_SE,  layout=grid(2, 1), size=(500,500))
-    return p_SE,c_SE
 end
+
+# α = 0.9
+# Plots.scalefontsizes(α)
+default(fontfamily = "Times New Roman")
+###Performance Metrics###
+xtick_values = [3e5, 6e5]
+p_SE = plot(ylabel = "discounted return", xlabel = "simulations", xticks=xtick_values, right_margin=5*Plots.mm)
+c_SE = plot(ylabel = "discounted cost", xlabel = "simulations", xticks=xtick_values, legend=:topright, legend_background_color=:transparent, fg_legend = :transparent) #legend=:outertop, legend_columns=-1, 
+for solver in Solvers
+    #Average Discounted Cumulative Reward vs Iteration
+    means = [Statistics.mean(iters) for iters in solver.Rs]
+    stds = [Statistics.std(iters) for iters in solver.Rs]
+    SEs = stds / sqrt(nsims)
+    if solver.flag == true
+        color = :blue
+        solver_label = "CC-POMCP+" #CPOMCPOW
+    else
+        color = :red
+        solver_label = "CC-POMCP"
+    end
+    plot!(p_SE, tree_queries, means, linecolor=color, label="")
+    plot!(p_SE, tree_queries, means-SEs, fillrange=means+SEs, fillalpha=0.3, label="", linecolor=nothing, fillcolor=color)
+    #Average Discounted Cumulative Cost vs Iteration
+    meansC = [Statistics.mean(iters) for iters in solver.Cs]
+    meansC = reduce(vcat, meansC)
+    stdsC = [Statistics.std(iters) for iters in solver.Cs]
+    stdsC = reduce(vcat, stdsC)
+    SEsC = stdsC / sqrt(nsims)
+    plot!(c_SE, tree_queries, meansC, linecolor=color, label = solver_label)
+    plot!(c_SE, tree_queries, meansC-SEsC, fillrange=meansC+SEsC, fillalpha=0.3, label="", linecolor=nothing, fillcolor=color)
+end
+
+hline!(c_SE, [0.1], line=:dash, label="constraint budget", linecolor=:green)
+x = plot(c_SE, p_SE,  layout=grid(2, 1), size=(500,500))
+ld = plot(c_SE, p_SE , layout=grid(1,2), size=(500,500))
+@infiltrate
+return p_SE,c_SE
+#end

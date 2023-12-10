@@ -79,9 +79,37 @@ function run_cpomdp_simulation(cpomdp::CPOMDP, solver::Solver,
         C .+= c.*γ
         rc = 0.0
 
-        if γ == 1
+        if γ == 1 #save only the first action taken
+           
+            if typeof(cpomdp.pomdp) == CPOMCPPlusExperiments.TigerPOMDPTerminal
 
-            if typeof(cpomdp.pomdp) != SpillpointInjectionPOMDP
+                tree = :tree in keys(ai) ? ai[:tree] : nothing
+                v_taken_first = tree.v[a+1]
+                cv_taken_first = tree.cv[a+1]
+                lambda_first = tree.lambda[1]
+                actions = [0, 1, 2]
+                n = [tree.n[a+1] for a in actions]
+
+                push!(first_vals, (;a, v_taken_first, cv_taken_first, lambda_first, n))
+
+            elseif typeof(cpomdp.pomdp) == SpillpointInjectionPOMDP
+
+                tree = :tree in keys(ai) ? ai[:tree] : nothing
+                idx = findall(x -> x == a, tree.a_labels)                
+                v_taken_first = reduce(vcat, tree.v[idx])
+                cv_taken_first = reduce(vcat, tree.cv[idx])
+                if length(v_taken_first) > 1
+                    v_taken_first = reduce(vcat, sum(v_taken_first) / length(v_taken_first)) #function mean is redefined
+                    cv_taken_first = reduce(vcat, sum(cv_taken_first) / length(cv_taken_first))
+                end
+                if solver.plus_flag
+                    lambda_first = tree.lambda[1]
+                else
+                    lambda_first = planner._lambda
+                end
+                push!(first_vals, (;a, v_taken_first, cv_taken_first, lambda_first))
+            
+            else
                 tree = :tree in keys(ai) ? ai[:tree] : nothing
                 a_indx = actiontoind[a]
                 v_taken_first = tree.v[a_indx]
@@ -91,31 +119,12 @@ function run_cpomdp_simulation(cpomdp::CPOMDP, solver::Solver,
                 else
                     lambda_first = planner._lambda
                 end
-
-                n = [tree.n[actiontoind[a]] for a in actions]
-                
+                n = [tree.n[actiontoind[a]] for a in actions]                
                 push!(first_vals, (;a_indx, v_taken_first, cv_taken_first, lambda_first, n))
-            else
-                #@infiltrate
-                tree = :tree in keys(ai) ? ai[:tree] : nothing
-                idx = findall(x -> x == a, tree.a_labels)                
-                v_taken_first = reduce(vcat, tree.v[idx])
-                cv_taken_first = reduce(vcat, tree.cv[idx])
-                if length(v_taken_first) > 1
-                    v_taken_first = reduce(vcat, sum(v_taken_first) / length(v_taken_first)) #mean is redefined
-                    cv_taken_first = reduce(vcat, sum(cv_taken_first) / length(cv_taken_first))
-                end
-                if solver.plus_flag
-                    lambda_first = tree.lambda[1]
-                else
-                    lambda_first = planner._lambda
-                end
-                push!(first_vals, (;a, v_taken_first, cv_taken_first, lambda_first))
-            end
+            end            
 
         end
 
-        # @infiltrate
         γ *= discount(cpomdp)
         if track_history
             push!(hist, (;s, a, o, r, c, rc, sp, b, 

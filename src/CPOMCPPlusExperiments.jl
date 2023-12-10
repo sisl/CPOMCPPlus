@@ -31,22 +31,13 @@ using CPOMCPOW
 
 # models 
 using POMDPModels
-# export CLightDark1D
-# include("cpomdps/clightdark.jl")
 export LightDarkNew, CLightDarkNew, zeroV_trueC
 include("cpomdps/clightdarknew.jl")
 export CTigerExtended
 include("cpomdps/tigerTerminal.jl")
-
-# using RockSample
-# export RockSampleCPOMDP
-# include("cpomdps/crocksample.jl")
-
 using SpillpointPOMDP
 export SpillpointInjectionCPOMDP
 include("cpomdps/cspillpoint.jl")
-
-#using RoombaPOMDPs ????
 
 # helpers
 export
