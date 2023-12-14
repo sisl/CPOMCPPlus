@@ -1,9 +1,0 @@
-[submodule "CPOMCPOW.jl"]
-	path = CPOMCPOW.jl
-	url = https://github.com/sisl/CPOMCPOW.jl
-[submodule "CPOMCP.jl"]
-	path = CPOMCP.jl
-	url = https://github.com/sisl/CPOMCP.jl
-[submodule "CMCTS.jl"]
-	path = CMCTS.jl
-	url = https://github.com/sisl/CMCTS.jl
