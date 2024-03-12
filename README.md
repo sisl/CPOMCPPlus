@@ -1,4 +1,4 @@
-This branch is for running Rocksample experiments.
+This branch is for running Constrained Tiger experiments.
 Please switch to the branch for the experiments you wish to run.
 ### Installation Instructions
 
